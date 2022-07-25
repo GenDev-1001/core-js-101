@@ -457,8 +457,31 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const rowsLen = m1.length;
+  const columsLen = m2[0].length;
+  const newMatrix = Array.from(Array(rowsLen), () => new Array(columsLen));
+
+  const fillMatrix = (row, col, arr) => {
+    const rowsItem = row;
+    const columnItem = arr.reduce((acc, elem) => {
+      acc.push(elem[col]);
+      return acc;
+    }, []);
+
+    const sum = rowsItem
+      .map((e, idx) => e * columnItem[idx])
+      .reduce((acc, e) => e + acc);
+
+    return sum;
+  };
+
+  for (let i = 0; i < rowsLen; i += 1) {
+    for (let j = 0; j < columsLen; j += 1) {
+      newMatrix[i][j] = fillMatrix(m1[i], j, m2);
+    }
+  }
+  return newMatrix;
 }
 
 
@@ -492,8 +515,42 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const fillArray = (arr) => {
+    const variants = {
+      3: arr,
+      2: arr.concat(undefined),
+      1: arr.concat([undefined, undefined]),
+      0: [undefined, undefined, undefined],
+    };
+
+    return variants[arr.length];
+  };
+  const linesMas = position.map(fillArray).flat();
+
+
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const [a, b, c] = lines[i];
+    if (
+      linesMas[a]
+        && linesMas[a] === linesMas[b]
+        && linesMas[a] === linesMas[c]
+    ) {
+      return linesMas[a];
+    }
+  }
+  return undefined;
 }
 
 

@@ -111,32 +111,65 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  str: '',
+
+  builder(status, option) {
+    this.error(status);
+    const obj = Object.create(cssSelectorBuilder);
+    obj.status = status;
+    obj.str = `${this.str}${option}`;
+
+    return obj;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    return this.builder(1, value);
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    return this.builder(2, `#${value}`);
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    return this.builder(3, `.${value}`);
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    return this.builder(4, `[${value}]`);
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    return this.builder(5, `:${value}`);
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    return this.builder(6, `::${value}`);
+  },
+
+  combine(selector1, combinator, selector2) {
+    const obj = Object.create(cssSelectorBuilder);
+    obj.str = `${selector1.str} ${combinator} ${selector2.str}`;
+    return obj;
+  },
+
+  stringify() {
+    return this.str;
+  },
+
+  error(newStatus) {
+    if (this.status > newStatus) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+      );
+    }
+    if (
+      this.status === newStatus
+      && (newStatus === 1 || newStatus === 2 || newStatus === 6)
+    ) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
+      );
+    }
   },
 };
 
