@@ -77,8 +77,13 @@ function isLeapYear(date) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const timeDiff = (endDate - startDate) / 1000;
+  const hour = String(Math.trunc((timeDiff / 60 / 60) % 24)).padStart(2, '0');
+  const minute = String(Math.trunc((timeDiff / 60) % 60)).padStart(2, '0');
+  const second = (timeDiff % 60).toFixed(3).padStart(6, '0');
+
+  return `${hour}:${minute}:${second}`;
 }
 
 
@@ -98,8 +103,18 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  const ROUND_NUMBER = 360;
+  const HALF_ROUND = 180;
+
+  const minAngle = new Date(date).getUTCMinutes() * 6;
+  const hAngle = new Date(date).getUTCHours() * 30 + new Date(date).getUTCMinutes() * 0.5;
+  const angleBetween = Math.abs(minAngle - hAngle);
+
+  const angle = Math.abs(Math.min(angleBetween, ROUND_NUMBER - angleBetween));
+  return angle < HALF_ROUND
+    ? (angle * Math.PI) / HALF_ROUND
+    : ((ROUND_NUMBER - angle) * Math.PI) / HALF_ROUND;
 }
 
 

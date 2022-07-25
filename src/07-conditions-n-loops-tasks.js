@@ -27,8 +27,12 @@
  *  21 => 'Fizz'
  *
  */
-function getFizzBuzz(/* num */) {
-  throw new Error('Not implemented');
+function getFizzBuzz(num) {
+  if (num % 3 === 0 && num % 5 === 0) return 'FizzBuzz';
+  if (num % 3 === 0) return 'Fizz';
+  if (num % 5 === 0) return 'Buzz';
+
+  return num;
 }
 
 
@@ -118,10 +122,16 @@ function isTriangle(a, b, c) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
-}
+function doRectanglesOverlap(rect1, rect2) {
+  const right1 = rect1.left + rect1.width;
+  const bottom1 = rect1.top + rect1.height;
 
+  const right2 = rect2.left + rect2.width;
+  const bottom2 = rect2.top + rect2.height;
+
+
+  return rect1.left < right2 && right1 > rect2.left && rect1.top < bottom2 && bottom1 > rect2.top;
+}
 
 /**
  * Returns true, if point lies inside the circle, otherwise false.
@@ -149,8 +159,12 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  const diffX = Math.abs(point.x - circle.center.x);
+  const diffY = Math.abs(point.y - circle.center.y);
+  const circleRadius = circle.radius * circle.radius;
+
+  return diffX * diffX + diffY * diffY < circleRadius;
 }
 
 
