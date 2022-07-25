@@ -179,8 +179,21 @@ function isInsideCircle(circle, point) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  const makePattern = (char) => new RegExp(`${char}`, 'g');
+  const uniqChars = [...new Set(str)];
+  let res = null;
+
+  uniqChars.every((char) => {
+    if (str.match(makePattern(char) || []).length === 1) {
+      res = char;
+      return false;
+    }
+    return true;
+  });
+
+
+  return res;
 }
 
 
@@ -206,8 +219,12 @@ function findFirstSingleChar(/* str */) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  const start = isStartIncluded ? '[' : '(';
+  const end = isEndIncluded ? ']' : ')';
+  const range = a < b ? `${a}, ${b}` : `${b}, ${a}`;
+
+  return `${start}${range}${end}`;
 }
 
 
@@ -327,8 +344,29 @@ function getDigitalRoot(num) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const start = '{[(<';
+  const end = '}])>';
+
+  const map = {
+    '}': '{',
+    ']': '[',
+    ')': '(',
+    '>': '<',
+  };
+
+  const queue = [];
+
+  const res = str.split('').every((char) => {
+    if (start.includes(char)) {
+      queue.push(char);
+    }
+
+    return !(end.includes(char) && map[char] !== queue.pop());
+  });
+
+
+  return !res ? res : !queue.length;
 }
 
 
@@ -369,8 +407,35 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const temp = pathes.map((path) => `${path.split('/')
+    .slice(1, -1)
+    .join('/')}`);
+  const isSeparator = pathes.every((path) => path[0] === '/');
+
+  const removePath = (pathesArr) => {
+    if (pathesArr.every((path) => pathesArr[0] === path)) {
+      return pathesArr[0];
+    }
+    const masRes = pathesArr.map((path) => {
+      const pathDev = path.split('/');
+
+      return pathDev.slice(0, pathDev.length - 1).join('/');
+    });
+
+
+    return removePath(masRes);
+  };
+
+
+  const res = removePath(temp);
+
+  if (res) {
+    return `/${res}/`;
+  }
+
+
+  return isSeparator ? '/' : '';
 }
 
 
